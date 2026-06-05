@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<!--
+  GuestGuide — Smart Hospitality Platform
+  ==========================================
+  INSTALLATION NOTES:
+  - Upload all 3 files (index.html, style.css, script.js) to any web server
+  - No terminal commands required — just upload and open in browser
+  - No build step, no npm, no dependencies
+  - Works from any static file host (Netlify, cPanel, GitHub Pages, etc.)
+  - For Google Maps autocomplete: replace YOUR_GOOGLE_MAPS_API_KEY below
+  - Minimum permissions: read access on server for all 3 files
+
+  RESET DEMO DATA:
+  - Open browser console and run: resetDemoData()
+  - This clears all bookings, guests, properties, welcome guide entries, media
+-->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GuestGuide — Smart Hospitality</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- ============================================================
+     LANDING PAGE
+     ============================================================ -->
+<div id="landing-page">
+  <nav class="top-nav">
+    <div class="nav-logo" style="color:#fff;">Guest<span>Guide</span></div>
+    <div class="nav-actions">
+      <button class="btn btn-outline btn-sm" onclick="showPage('booking-id')" style="color:#fff;border-color:rgba(255,255,255,0.4);">Guest Login</button>
+      <button class="btn btn-primary btn-sm" onclick="showAdminLogin()">Admin Panel</button>
+    </div>
+  </nav>
+
+  <section class="hero" style="position:relative;overflow:hidden;padding:100px 24px 80px;text-align:center;background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:white;">
+    <div style="position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=2000&q=80') center/cover no-repeat;opacity:0.25;z-index:1;"></div>
+    <div style="position:relative;z-index:2;max-width:900px;margin:0 auto;">
+      <div class="hero-badge" style="background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.2);">
+        ✦ Premium Hospitality Platform
+      </div>
+      <h1 class="hero-title" style="font-size:clamp(42px,7vw,72px);line-height:1.1;margin:28px 0 20px;font-weight:700;">
+        Smart Guest<br><span style="background:linear-gradient(90deg,#60a5fa,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Onboarding</span>
+      </h1>
+      <p class="hero-subtitle" style="font-size:18px;max-width:620px;margin:0 auto 40px;opacity:0.95;line-height:1.6;">
+        A complete digital onboarding system for short-term rentals. Beautiful, secure, and effortless for your guests.
+      </p>
+      <div class="hero-cta" style="margin-bottom:48px;">
+        <button class="btn btn-primary btn-lg" onclick="showPage('booking-id')" style="padding:16px 40px;font-size:17px;box-shadow:0 10px 30px rgba(26,108,246,0.4);">
+          View Guest Demo →
+        </button>
+        <button class="btn btn-outline btn-lg" onclick="showAdminLogin()" style="padding:16px 40px;font-size:17px;border-color:rgba(255,255,255,0.4);color:white;">
+          Admin Dashboard
+        </button>
+      </div>
+      <div class="hero-features" style="gap:28px;justify-content:center;flex-wrap:wrap;">
+        <div class="hero-feature" style="background:rgba(255,255,255,0.08);padding:10px 20px;border-radius:9999px;backdrop-filter:blur(8px);"><span class="hero-feature-icon">📍</span> GPS Check-In</div>
+        <div class="hero-feature" style="background:rgba(255,255,255,0.08);padding:10px 20px;border-radius:9999px;backdrop-filter:blur(8px);"><span class="hero-feature-icon">🪪</span> ID Verification</div>
+        <div class="hero-feature" style="background:rgba(255,255,255,0.08);padding:10px 20px;border-radius:9999px;backdrop-filter:blur(8px);"><span class="hero-feature-icon">📱</span> Mobile First</div>
+        <div class="hero-feature" style="background:rgba(255,255,255,0.08);padding:10px 20px;border-radius:9999px;backdrop-filter:blur(8px);"><span class="hero-feature-icon">🏨</span> Multi-Property</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features-section">
+    <div class="section-header">
+      <div class="section-badge">Features</div>
+      <h2 class="section-title">Everything You Need</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">👤</div><div class="feature-title">Personalized Experience</div><p class="feature-text">Each guest gets their own unique booking link with tailored property information.</p></div>
+      <div class="feature-card"><div class="feature-icon">📍</div><div class="feature-title">GPS Verified Check-In</div><p class="feature-text">Confirm guests are physically at the property before unlocking the full guide.</p></div>
+      <div class="feature-card"><div class="feature-icon">🪪</div><div class="feature-title">Digital ID Verification</div><p class="feature-text">Guests upload front &amp; back of their ID before arrival — secure and paperless.</p></div>
+      <div class="feature-card"><div class="feature-icon">📖</div><div class="feature-title">Custom Welcome Guide</div><p class="feature-text">Amenities, restaurants, attractions — all in one beautiful guide.</p></div>
+      <div class="feature-card"><div class="feature-icon">🏢</div><div class="feature-title">Multi-Property Management</div><p class="feature-text">Manage all your properties and bookings from one powerful admin dashboard.</p></div>
+      <div class="feature-card"><div class="feature-icon">⚡</div><div class="feature-title">Mobile Friendly &amp; Fast</div><p class="feature-text">Guests access everything from their phone — no app download needed.</p></div>
+    </div>
+  </section>
+
+  <section class="flow-section">
+    <div class="flow-section-inner">
+      <div class="section-header">
+        <div class="section-badge">Guest Flow</div>
+        <h2 class="section-title">Seamless 7-Step Journey</h2>
+      </div>
+      <div class="flow-steps">
+        <div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-label">Booking Summary</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-label">Front ID</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-label">Back ID</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-num">4</div><div class="flow-step-label">Parking</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-num">5</div><div class="flow-step-label">Arrival Info</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-num">6</div><div class="flow-step-label">Welcome Guide</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-step-num">7</div><div class="flow-step-label">Check-Out</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2 class="cta-title">Ready to Elevate Your Guest Experience?</h2>
+    <p class="cta-sub">Join hundreds of hosts using GuestGuide for premium onboarding.</p>
+    <button class="btn btn-primary btn-lg" onclick="showPage('booking-id')">Try the Demo →</button>
+  </section>
+
+  <footer class="landing-footer">
+    © 2026 GuestGuide · Smart Hospitality Platform &nbsp;·&nbsp;
+    Designed by <a href="https://github.com/devnayem1" target="_blank" style="color:#155DD4">Developer Nayem</a>&nbsp;·&nbsp;
+    <span onclick="showAdminLogin()" style="cursor:pointer;color:#155DD4;"><br>Admin Login</span>
+  </footer>
+</div>
+
+<!-- ============================================================
+     BOOKING ID PAGE
+     ============================================================ -->
+<div id="booking-id-page" class="hidden">
+  <div class="centered-page">
+    <div class="centered-card">
+      <div class="centered-card-header">
+        <div class="logo">Guest<span style="color:rgba(255,255,255,.7)">Guide</span></div>
+        <p>Enter your booking ID to access your welcome guide.</p>
+      </div>
+      <div class="centered-card-body">
+        <div class="form-group">
+          <label class="form-label">Booking ID</label>
+          <input type="text" id="booking-id-input" class="form-input" placeholder="e.g. 1001" maxlength="10">
+          <p class="text-xs text-gray-500 mt-2">Your booking ID was provided in your confirmation email.</p>
+        </div>
+        <button class="btn btn-primary btn-full" onclick="startGuestFlow()">Continue →</button>
+        <div class="demo-hint">Demo bookings: <strong>1001</strong> · <strong>1002</strong></div>
+        <button class="btn btn-secondary btn-full" style="margin-top:12px" onclick="showPage('landing')">← Back to Home</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     GUEST FLOW
+     ============================================================ -->
+<div id="guest-flow">
+  <header class="guest-flow-header">
+    <div class="guest-logo">Guest<span>Guide</span></div>
+    <div id="step-progress" class="step-progress">
+      <div class="step-dot active" id="sdot-0"></div>
+      <div class="step-dot" id="sdot-1"></div>
+      <div class="step-dot" id="sdot-2"></div>
+      <div class="step-dot" id="sdot-3"></div>
+      <div class="step-dot" id="sdot-4"></div>
+    </div>
+    <button class="btn btn-outline btn-sm" onclick="exitGuestFlow()">✕ Exit</button>
+  </header>
+
+  <!-- STEP 1: Booking Summary -->
+  <div id="gstep-1" class="guest-content">
+    <div class="step-label">Step 1 of 5</div>
+    <h2 class="step-title" id="step1-welcome">Welcome, Guest! 👋</h2>
+    <p class="step-subtitle">Please review your booking details below.</p>
+    <div class="booking-summary-card">
+      <div class="prop-name" id="s1-propname">—</div>
+      <div class="prop-location" id="s1-proploc">—</div>
+      <div class="booking-row"><span class="booking-row-label">Booking ID</span><span class="booking-row-value" id="s1-bookingid">—</span></div>
+      <div class="booking-row"><span class="booking-row-label">Guest Name</span><span class="booking-row-value" id="s1-guestname">—</span></div>
+      <div class="booking-row"><span class="booking-row-label">Platform</span><span class="booking-row-value" id="s1-platform">—</span></div>
+      <div class="booking-dates">
+        <div class="date-box">
+          <div class="date-box-label">Check-In</div>
+          <div class="date-box-date" id="s1-checkin">—</div>
+          <div class="date-box-day" id="s1-checkin-day">—</div>
+        </div>
+        <div class="date-box">
+          <div class="date-box-label">Check-Out</div>
+          <div class="date-box-date" id="s1-checkout">—</div>
+          <div class="date-box-day" id="s1-checkout-day">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="exitGuestFlow()">← Back</button>
+      <button class="btn btn-primary" onclick="guestStep(2)">Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Front ID Upload -->
+  <div id="gstep-2" class="guest-content hidden">
+    <div class="step-label">Step 2 of 5</div>
+    <h2 class="step-title">Front of ID 🪪</h2>
+    <p class="step-subtitle">Upload a clear photo of the front of your government-issued ID.</p>
+    <div class="id-upload-area" id="front-upload-area" onclick="document.getElementById('front-id-input').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleIDDrop(event,'front')">
+      <div id="front-id-placeholder">
+        <div class="id-silhouette">
+          <svg viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="300" height="180" rx="16" stroke="#1a6cf6" stroke-width="3" stroke-dasharray="8 4"/>
+            <rect x="30" y="40" width="70" height="80" rx="8" fill="#1a6cf6" opacity=".15" stroke="#1a6cf6" stroke-width="2"/>
+            <circle cx="65" cy="70" r="18" fill="#1a6cf6" opacity=".2"/>
+            <rect x="30" y="135" width="70" height="8" rx="4" fill="#1a6cf6" opacity=".2"/>
+            <rect x="120" y="45" width="160" height="10" rx="5" fill="#1a6cf6" opacity=".25"/>
+            <rect x="120" y="68" width="110" height="8" rx="4" fill="#1a6cf6" opacity=".15"/>
+            <rect x="120" y="88" width="130" height="8" rx="4" fill="#1a6cf6" opacity=".15"/>
+            <rect x="120" y="108" width="90" height="8" rx="4" fill="#1a6cf6" opacity=".15"/>
+          </svg>
+        </div>
+        <div class="id-upload-label">Upload Front of ID</div>
+        <div class="id-upload-sub">Tap to select or drag &amp; drop</div>
+        <div class="id-upload-btn">📸 Choose Photo</div>
+      </div>
+      <div id="front-id-preview" class="hidden">
+        <div class="id-preview"><img id="front-id-img" src="" alt="Front ID"></div>
+        <div class="id-success-badge">✅ Front uploaded successfully</div>
+        <div class="id-actions">
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();document.getElementById('front-id-input').click()">Change Photo</button>
+          <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();removeID('front')">Remove</button>
+        </div>
+      </div>
+    </div>
+    <input type="file" id="front-id-input" accept="image/*,capture=camera" class="hidden" onchange="handleIDUpload(event,'front')">
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="guestStep(1)">← Back</button>
+      <button class="btn btn-primary" id="front-next-btn" onclick="guestStep(3)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Back ID Upload -->
+  <div id="gstep-3" class="guest-content hidden">
+    <div class="step-label">Step 3 of 5</div>
+    <h2 class="step-title">Back of ID 🪪</h2>
+    <p class="step-subtitle">Upload a clear photo of the back of your ID.</p>
+    <div class="id-upload-area" id="back-upload-area" onclick="document.getElementById('back-id-input').click()" ondragover="event.preventDefault();this.classList.add('dragover')" ondragleave="this.classList.remove('dragover')" ondrop="handleIDDrop(event,'back')">
+      <div id="back-id-placeholder">
+        <div class="id-silhouette">
+          <svg viewBox="0 0 320 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="10" y="10" width="300" height="180" rx="16" stroke="#1a6cf6" stroke-width="3" stroke-dasharray="8 4"/>
+            <rect x="30" y="50" width="260" height="6" rx="3" fill="#1a6cf6" opacity=".2"/>
+            <rect x="30" y="64" width="200" height="6" rx="3" fill="#1a6cf6" opacity=".15"/>
+            <rect x="30" y="90" width="260" height="30" rx="6" fill="#1a6cf6" opacity=".08" stroke="#1a6cf6" stroke-width="1.5"/>
+            <rect x="40" y="100" width="240" height="10" rx="5" fill="#1a6cf6" opacity=".2"/>
+          </svg>
+        </div>
+        <div class="id-upload-label">Upload Back of ID</div>
+        <div class="id-upload-sub">Tap to select or drag &amp; drop</div>
+        <div class="id-upload-btn">📸 Choose Photo</div>
+      </div>
+      <div id="back-id-preview" class="hidden">
+        <div class="id-preview"><img id="back-id-img" src="" alt="Back ID"></div>
+        <div class="id-success-badge">✅ Back uploaded successfully</div>
+        <div class="id-actions">
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();document.getElementById('back-id-input').click()">Change Photo</button>
+          <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();removeID('back')">Remove</button>
+        </div>
+      </div>
+    </div>
+    <input type="file" id="back-id-input" accept="image/*,capture=camera" class="hidden" onchange="handleIDUpload(event,'back')">
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="guestStep(2)">← Back</button>
+      <button class="btn btn-primary" id="back-next-btn" onclick="guestStep(4)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Parking -->
+  <div id="gstep-4" class="guest-content hidden">
+    <div class="step-label">Step 4 of 5</div>
+    <h2 class="step-title">Parking 🚗</h2>
+    <p class="step-subtitle">Will you be bringing a vehicle to the property?</p>
+    <div class="parking-options">
+      <div class="parking-option" id="park-yes" onclick="selectParking('yes')">
+        <div class="parking-option-icon">🚗</div>
+        <div class="parking-option-text">Yes, I have a vehicle</div>
+      </div>
+      <div class="parking-option" id="park-no" onclick="selectParking('no')">
+        <div class="parking-option-icon">🚶</div>
+        <div class="parking-option-text">No vehicle</div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="guestStep(3)">← Back</button>
+      <button class="btn btn-primary" id="parking-next-btn" onclick="guestStep(5)" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- STEP 5: Arrival Info -->
+  <div id="gstep-5" class="guest-content hidden">
+    <div class="step-label">Step 5 of 5</div>
+    <h2 class="step-title">Arrival Information 🗝️</h2>
+    <p class="step-subtitle">Your check-in details will unlock on the day of your arrival.</p>
+    <div id="address-locked">
+      <div class="lock-card">
+        <div class="lock-icon">🔒</div>
+        <h3 class="lock-title">Details Locked</h3>
+        <p>Check back here for the property address, door code, and entry instructions on the day of arrival at 12:00 PM local time.</p>
+        <div class="countdown-badge" id="checkin-countdown">📅 Check-in: Loading...</div>
+      </div>
+    </div>
+    <div id="address-unlocked" class="hidden">
+      <div class="unlock-section">
+        <div class="unlock-header">
+          <span class="unlock-badge">✓ UNLOCKED</span>
+          <span class="unlock-title">Check-In Details Ready</span>
+        </div>
+        <div class="info-row"><div class="info-icon">📍</div><div><div class="info-label">Address</div><div class="info-value" id="unlock-address">—</div></div></div>
+        <div class="info-row"><div class="info-icon">🔑</div><div><div class="info-label">Door Code</div><div class="info-value" id="unlock-code">—</div></div></div>
+        <div class="info-row"><div class="info-icon">🕐</div><div><div class="info-label">Check-In Time</div><div class="info-value">After 3:00 PM</div></div></div>
+        <div class="info-row"><div class="info-icon">📞</div><div><div class="info-label">Support</div><div class="info-value" id="unlock-phone">—</div></div></div>
+        <div class="map-embed">
+          <a id="map-link" href="#" target="_blank">🗺️<br>Open in Google Maps</a>
+        </div>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="guestStep(4)">← Back</button>
+      <button class="btn btn-primary" onclick="openWelcomeGuide()">View Welcome Guide →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     WELCOME GUIDE
+     ============================================================ -->
+<div id="welcome-guide">
+  <div class="guide-layout">
+    <aside class="guide-sidebar" id="guide-sidebar">
+      <div class="guide-sidebar-logo">Guest<span>Guide</span></div>
+      <div id="guide-nav-items"></div>
+      <div style="margin-top:auto;padding-top:20px;border-top:1px solid var(--gray-100)">
+        <div class="guide-nav-item" onclick="openCheckoutFlow()">
+          <span class="guide-nav-icon">🚪</span>Check-Out
+        </div>
+        <div class="guide-nav-item" onclick="exitToGuestFlow()">
+          <span class="guide-nav-icon">←</span>Back to Check-In
+        </div>
+      </div>
+    </aside>
+    <main class="guide-main">
+      <div id="guide-overview">
+        <div class="guide-hero">
+          <img id="guide-hero-img" src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80" alt="Property" onerror="this.src='https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80'">
+          <div class="guide-hero-overlay">
+            <div class="guide-hero-name" id="guide-prop-name">Oceanview Resort</div>
+            <div class="guide-hero-loc">📍 <span id="guide-prop-loc">123 Ocean Drive, Miami, FL</span></div>
+          </div>
+        </div>
+        <div class="guide-overview-body">
+          <h3 style="font-size:22px;font-weight:600;color:var(--gray-900);margin-bottom:6px">Welcome, <span id="guide-guest-name">Guest</span>! 🎉</h3>
+          <p style="font-size:14px;color:var(--gray-500);margin-bottom:28px">We're excited to host you. Explore everything below.</p>
+          <div class="guide-categories-grid" id="guide-categories-grid"></div>
+        </div>
+      </div>
+      <div id="guide-category-detail" class="hidden category-detail">
+        <div class="category-back" onclick="showGuideSection('overview')">← Back to Guide</div>
+        <img id="cat-detail-img" class="category-hero-img" src="" alt="Category" onerror="this.style.display='none'">
+        <div class="category-content">
+          <div class="category-title-row">
+            <span class="category-icon" id="cat-detail-icon">🏠</span>
+            <div class="category-title" id="cat-detail-title">Category</div>
+          </div>
+          <div class="rich-content" id="cat-detail-content"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div class="guide-mobile-nav">
+    <div class="guide-mobile-nav-inner" id="guide-mobile-nav-inner"></div>
+  </div>
+</div>
+
+<!-- ============================================================
+     CHECKOUT FLOW
+     ============================================================ -->
+<div id="checkout-flow">
+  <header class="guest-flow-header">
+    <div class="guest-logo">Guest<span>Guide</span></div>
+    <div id="checkout-progress" class="step-progress">
+      <div class="step-dot active" id="cdot-0"></div>
+      <div class="step-dot" id="cdot-1"></div>
+      <div class="step-dot" id="cdot-2"></div>
+      <div class="step-dot" id="cdot-3"></div>
+      <div class="step-dot" id="cdot-4"></div>
+    </div>
+    <button class="btn btn-outline btn-sm" onclick="exitCheckout()">✕ Exit</button>
+  </header>
+
+  <div id="costep-1" class="checkout-content">
+    <div class="step-label">Step 1 of 5 · Check-Out</div>
+    <h2 class="step-title">Trash &amp; Waste 🗑️</h2>
+    <p class="step-subtitle">Please ensure all rubbish has been disposed of properly.</p>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">All trash bags removed and placed in designated outdoor bins</div></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">Recycling sorted and placed in correct bins</div></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">Kitchen bin liner replaced or emptied</div></div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="exitCheckout()">← Back</button>
+      <button class="btn btn-primary" onclick="checkoutStep(2)">Next →</button>
+    </div>
+  </div>
+
+  <div id="costep-2" class="checkout-content hidden">
+    <div class="step-label">Step 2 of 5 · Check-Out</div>
+    <h2 class="step-title">Kitchen &amp; Dishes 🍽️</h2>
+    <p class="step-subtitle">Please clean any used dishes and leave the kitchen tidy.</p>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">All dishes washed, dried, and put away</div></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">Countertops wiped clean</div></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">Fridge emptied of personal items</div></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">Stovetop and oven left clean</div></div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="checkoutStep(1)">← Back</button>
+      <button class="btn btn-primary" onclick="checkoutStep(3)">Next →</button>
+    </div>
+  </div>
+
+  <div id="costep-3" class="checkout-content hidden">
+    <div class="step-label">Step 3 of 5 · Check-Out</div>
+    <h2 class="step-title">Doors &amp; Locks 🔒</h2>
+    <p class="step-subtitle">Please ensure the property is secure before leaving.</p>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">All windows closed and locked</div></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">All lights turned off</div></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">AC/heating turned off or set to eco mode</div></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">Front door locked on the way out</div></div>
+    <div class="checklist-item" onclick="toggleCheck(this)"><div class="checklist-check">✓</div><div class="checklist-text">Keys or access card returned to lockbox/host</div></div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="checkoutStep(2)">← Back</button>
+      <button class="btn btn-primary" onclick="checkoutStep(4)">Next →</button>
+    </div>
+  </div>
+
+  <div id="costep-4" class="checkout-content hidden">
+    <div class="step-label">Step 4 of 5 · Check-Out</div>
+    <h2 class="step-title">Damage Report 🔍</h2>
+    <p class="step-subtitle">Did you notice any damage during your stay?</p>
+    <div class="damage-options">
+      <div class="damage-option no-damage" id="dmg-no" onclick="selectDamage('no')"><div class="damage-option-icon">✅</div><div class="damage-option-text">No Damage</div></div>
+      <div class="damage-option yes-damage" id="dmg-yes" onclick="selectDamage('yes')"><div class="damage-option-icon">⚠️</div><div class="damage-option-text">Report Damage</div></div>
+    </div>
+    <div id="damage-form" class="hidden" style="margin-top:20px">
+      <div class="form-group">
+        <label class="form-label">Describe the damage</label>
+        <textarea class="form-input form-textarea" id="damage-desc" placeholder="Please describe what happened..."></textarea>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn btn-secondary" onclick="checkoutStep(3)">← Back</button>
+      <button class="btn btn-primary" id="dmg-next-btn" onclick="checkoutStep(5)" disabled>Next →</button>
+    </div>
+  </div>
+
+  <div id="costep-5" class="checkout-content hidden">
+    <div class="step-label">Step 5 of 5 · Check-Out</div>
+    <h2 class="step-title">Leave a Review ⭐</h2>
+    <p class="step-subtitle">Your feedback means the world to us. How was your stay?</p>
+    <div class="star-rating" id="star-rating">
+      <span class="star" onclick="setStars(1)" data-v="1">★</span>
+      <span class="star" onclick="setStars(2)" data-v="2">★</span>
+      <span class="star" onclick="setStars(3)" data-v="3">★</span>
+      <span class="star" onclick="setStars(4)" data-v="4">★</span>
+      <span class="star" onclick="setStars(5)" data-v="5">★</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Share your experience</label>
+      <textarea class="form-input form-textarea" id="review-text" placeholder="We'd love to hear about your stay..."></textarea>
+    </div>
+    <div class="review-platforms" id="review-platforms">
+      <div class="review-platform-btn" onclick="openReviewPlatform('airbnb')">
+        <span class="platform-icon">🏠</span>
+        <div><div class="platform-text">Review on Airbnb</div><div class="platform-sub">Opens in new tab</div></div>
+        <span style="margin-left:auto;color:var(--gray-400)">→</span>
+      </div>
+      <div class="review-platform-btn" onclick="openReviewPlatform('google')">
+        <span class="platform-icon">⭐</span>
+        <div><div class="platform-text">Review on Google</div><div class="platform-sub">Opens in new tab</div></div>
+        <span style="margin-left:auto;color:var(--gray-400)">→</span>
+      </div>
+    </div>
+    <div class="step-nav" style="flex-direction:column">
+      <button class="btn btn-primary btn-full" onclick="submitCheckout()">✓ Complete Check-Out</button>
+      <button class="btn btn-secondary btn-full" onclick="checkoutStep(4)">← Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     ADMIN PANEL
+     ============================================================ -->
+<div id="admin-panel">
+  <div class="admin-layout">
+    <!-- Sidebar — New Structure per change #11 -->
+    <aside class="admin-sidebar" id="admin-sidebar">
+      <div class="admin-logo">Guest<span>Guide</span></div>
+
+      <!-- Dashboard -->
+      <div class="admin-nav-group">
+        <button class="admin-nav-item active" id="anav-dashboard" onclick="adminNav('dashboard',this)"><span class="admin-nav-icon">🏠</span>Dashboard</button>
+      </div>
+
+      <!-- Guest Bookings (merged) -->
+      <div class="admin-nav-group">
+        <button class="admin-nav-item" id="anav-guest-bookings" onclick="adminNav('guest-bookings',this)"><span class="admin-nav-icon">📅</span>Guest Bookings</button>
+      </div>
+
+      <!-- Management with collapsible -->
+      <div class="admin-nav-group">
+        <div class="admin-nav-label" onclick="toggleNavGroup('nav-mgmt')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:0 8px;margin-bottom:8px;">
+          <span>Management</span><span id="nav-mgmt-arrow" style="font-size:10px">▼</span>
+        </div>
+        <div id="nav-mgmt">
+          <button class="admin-nav-item" id="anav-properties" onclick="adminNav('properties',this)"><span class="admin-nav-icon">🏨</span>Properties</button>
+          <button class="admin-nav-item" id="anav-welcome-guide" onclick="adminNav('welcome-guide-admin',this)"><span class="admin-nav-icon">📋</span>Welcome Guide</button>
+          <button class="admin-nav-item" id="anav-emails" onclick="adminNav('emails',this)"><span class="admin-nav-icon">✉️</span>Mail Templates</button>
+        </div>
+      </div>
+
+      <!-- Settings with collapsible -->
+      <div class="admin-nav-group">
+        <div class="admin-nav-label" onclick="toggleNavGroup('nav-settings')" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:0 8px;margin-bottom:8px;">
+          <span>Settings</span><span id="nav-settings-arrow" style="font-size:10px">▼</span>
+        </div>
+        <div id="nav-settings">
+          <button class="admin-nav-item" id="anav-media" onclick="adminNav('media',this)"><span class="admin-nav-icon">🖼️</span>Media Library</button>
+          <button class="admin-nav-item" id="anav-preferences" onclick="adminNav('preferences',this)"><span class="admin-nav-icon">🎛️</span>Preferences</button>
+          <button class="admin-nav-item" id="anav-settings" onclick="adminNav('settings',this)"><span class="admin-nav-icon">⚙️</span>Global Settings</button>
+        </div>
+      </div>
+
+      <div class="admin-nav-exit">
+        <button class="admin-nav-item" onclick="exitAdmin()"><span class="admin-nav-icon">←</span>Exit Admin</button>
+      </div>
+    </aside>
+    <div class="admin-overlay" id="admin-overlay" onclick="closeAdminSidebar()"></div>
+
+    <main class="admin-main">
+      <div class="admin-topbar">
+        <button class="admin-mobile-toggle" onclick="toggleAdminSidebar()">☰</button>
+        <div class="admin-topbar-title" id="admin-page-title">Dashboard Overview</div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary btn-sm" id="admin-action-btn" onclick="adminTopAction()">+ Add Booking</button>
+        </div>
+      </div>
+      <div class="admin-content" id="admin-content"></div>
+    </main>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="modal-container"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
